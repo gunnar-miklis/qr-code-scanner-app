@@ -1,13 +1,12 @@
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { View, StyleSheet } from 'react-native';
 
-export default function CommonBarCodeScanner( { scanned, handleBarCodeScan } ) {
+export default function CommonBarCodeScanner( { showScanner, handleScanning } ) {
 	return (
 		<View style={styles.container}>
 			<BarCodeScanner
-				onBarCodeScanned={scanned ? undefined : handleBarCodeScan}
-				style={[ StyleSheet.absoluteFill, styles.barCodeScanner ]}
-				ratio={'1:1'}
+				onBarCodeScanned={showScanner ? handleScanning : undefined}
+				style={styles.barCodeScanner}
 			/>
 		</View>
 	);
@@ -15,8 +14,15 @@ export default function CommonBarCodeScanner( { scanned, handleBarCodeScan } ) {
 
 const styles = StyleSheet.create( {
 	container: {
-		width: '70%',
 		aspectRatio: 1,
+		width: '80%',
+		overflow: 'hidden',
 		backgroundColor: 'black',
+		borderRadius: 10,
+		marginBottom: 40,
+	},
+	barCodeScanner: {
+		width: 'auto',
+		height: 400,
 	},
 } );
