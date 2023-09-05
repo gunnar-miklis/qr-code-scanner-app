@@ -1,8 +1,11 @@
 ## QR-Code "Ticket Scanner" in React Native
 
-### RESULT
-<video src="assets/demo/demo.mp4" controls title="Demo" width="250px"></video>
+&nbsp;
 
+### Download [DEMO](https://github.com/gunnar-miklis/qr-code-scanner-app/raw/main/assets/demo/demo.mp4) Video
+_(998 KB, 00:00:41)_
+
+&nbsp;
 
 ## SETUP
 #### install
