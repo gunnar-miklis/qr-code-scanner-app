@@ -3,11 +3,19 @@
     "name": "QrCodeScanner",
     "slug": "QrCodeScanner",
     "version": "1.0.0",
+	"plugins": [
+		[
+		  "expo-barcode-scanner",
+		  {
+			"cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
+		  }
+		]
+	  ],
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,12 +27,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/images/favicon.png"
     }
   }
 }
