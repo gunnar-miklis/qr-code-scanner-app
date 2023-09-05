@@ -1,10 +1,13 @@
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, StatusBar } from 'react-native';
 
-export default function Header() {
+export default function Header( { title, subtitle } ) {
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>Ticket Scanner</Text>
-			<Text style={styles.paragraph}>Scan a QR Code to validate a Ticket.</Text>
+
+			<StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
+
+			<Text style={styles.title}>{title ? title : 'Ticket Scanner'}</Text>
+			{ subtitle && <Text style={styles.paragraph}>{subtitle}</Text> }
 		</View>
 	);
 }
