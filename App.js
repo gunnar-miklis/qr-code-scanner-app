@@ -1,7 +1,6 @@
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { Alert, Button, StyleSheet, Text, View } from 'react-native';
+import { Alert, Button, ScrollView, StyleSheet, View, StatusBar, SafeAreaView } from 'react-native';
 import { purchasedTickets } from './mockDB/mockData';
 import Header from './src/components/Header';
 import CommonBarCodeScanner from './src/components/CommonBarCodeScanner';
@@ -11,7 +10,7 @@ import CheckedInList from './src/components/CheckedInList';
 export default function App() {
 	const [ hasPermission, setHasPermission ] = useState( false );
 	const [ visitors, setVisitors ] = useState( purchasedTickets );
-	const [ scanned, setScanned ] = useState( false );
+	const [ checkedInVisitors, setCheckedInVisitors ] = useState( [] );
 	const [ showScanner, setShowScanner ] = useState( false );
 
 	useEffect( () => {
@@ -23,9 +22,13 @@ export default function App() {
 		setHasPermission( permission.status === 'granted' );
 	}
 
-	function handleBarCodeScan( { data } ) {
+	function filterVisitors() {
+		const filteredVisitors = visitors.filter( ( visitor ) => visitor.isCheckedIn );
+		setCheckedInVisitors( filteredVisitors );
+	}
+
+	function handleScanning( { data } ) {
 		setShowScanner( false );
-		setScanned( true );
 
 		for ( const visitor of visitors ) {
 			if ( visitor.ticketID === data ) {
@@ -33,60 +36,73 @@ export default function App() {
 					[
 						{
 							text: 'Cancel',
-							onPress: () => setScanned( false ),
+							onPress: () => setShowScanner( true ),
 							style: 'cancel',
 						},
 						{
 							text: 'Check In',
 							onPress: () => {
+								const currentTime = new Date();
 								visitor.isCheckedIn = true;
-								setVisitors( visitors );
-								setScanned( false );
-								setShowScanner( false );
+								visitor.checkInTime = currentTime;
+								filterVisitors();
+								setShowScanner( true );
 							},
 							style: 'default',
 						},
 					],
 					{
 						cancelable: true,
-						onDismiss: () => {},
+						onDismiss: () => setShowScanner( true ),
 					},
 				);
 			}
 		}
-		setScanned( false );
-		setShowScanner( false );
-		return Alert.alert( 'Ticket NOT found!', `Ticket ID: ${data}` );
+		return Alert.alert( 'Ticket NOT found!', `Ticket ID: ${data}`,
+			[
+				{
+					text: 'Ok',
+					onPress: () => setShowScanner( true ),
+					style: 'default',
+				},
+			],
+		);
 	}
 
 	if ( !hasPermission ) {
 		return (
-			<View style={styles.container}>
-				<Header/>
-				<Button
-					title='Allow Camera Access 🔐'
-					onPress={ () => getBarCodeScannerPermissions() }
-				/>
-			</View>
+			<SafeAreaView style={styles.container}>
+				<ScrollView>
+					<Header title='Setup'/>
+					<Button
+						title='🔐  Allow Camera Access'
+						onPress={ () => getBarCodeScannerPermissions() }
+					/>
+				</ScrollView>
+			</SafeAreaView>
 		);
 	}
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
+			<ScrollView>
 
-			<StatusBar style="auto" />
+				<Header subtitle='Scan a QR Code to validate a Ticket.'/>
 
-			<Header/>
+				{
+					showScanner ? (
+						<View style={styles.container}>
+							<CommonBarCodeScanner showScanner={showScanner} handleScanning={handleScanning} />
+							<Button title='Close' onPress={ () => setShowScanner( false ) } />
+						</View>
+					) :
+						<Button title='Scan' onPress={ () => setShowScanner( true ) } />
+				}
 
-			{
-				showScanner ?
-					<CommonBarCodeScanner scanned={scanned} handleBarCodeScan={handleBarCodeScan} /> :
-					<Button title='Open Scanner' onPress={() => setShowScanner( showScanner ? false : true )} />
-			}
+				{ checkedInVisitors.length > 0 && <CheckedInList checkedInVisitors={checkedInVisitors} /> }
 
-			<CheckedInList visitors={visitors} />
-
-		</View>
+			</ScrollView>
+		</SafeAreaView>
 	);
 }
 
@@ -94,9 +110,6 @@ const styles = StyleSheet.create( {
 	container: {
 		flex: 1,
 		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	button: {
-		width: '100%',
+		paddingTop: StatusBar.currentHeight,
 	},
 } );
