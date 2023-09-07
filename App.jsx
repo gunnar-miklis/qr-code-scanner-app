@@ -1,7 +1,7 @@
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { useEffect, useState } from 'react';
 import { Alert, Button, ScrollView, StyleSheet, View, StatusBar, SafeAreaView } from 'react-native';
-import { purchasedTickets } from './mockDB/mockData';
+import { purchasedTickets } from './mockData/mockData';
 import Header from './src/components/Header';
 import CommonBarCodeScanner from './src/components/CommonBarCodeScanner';
 import CheckedInList from './src/components/CheckedInList';
